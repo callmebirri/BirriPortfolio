@@ -22,18 +22,19 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
     >
       <div className="flex flex-col gap-4">
         <p
-          className="text-xs font-semibold tracking-widest uppercase"
-          style={{ color: 'var(--accent-color)', letterSpacing: '0.2em' }}
+          className="text-sm md:text-base font-semibold tracking-widest uppercase"
+          style={{ color: 'var(--accent-color)', letterSpacing: '0.28em' }}
         >
           Say hello
         </p>
         <h2
           className="font-serif text-balance"
           style={{
-            fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)',
+            fontSize: 'clamp(2rem, 6vw, 4.6rem)',
             fontWeight: 400,
             color: 'var(--ink)',
-            lineHeight: 1.1,
+            lineHeight: 1.02,
+            letterSpacing: '-0.03em',
           }}
         >
           Let&apos;s build something
