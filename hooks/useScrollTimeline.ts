@@ -16,43 +16,19 @@ export interface ScrollTimelineRefs {
 }
 
 /**
- * useScrollTimeline — cinematic scroll choreography.
+ * useScrollTimeline — cinematic scroll choreography for desktop,
+ * bypassed on mobile (< 768px) and prefers-reduced-motion for pure native touch scroll.
  *
- * Smooth-scroll stack (in order):
- *  1. Lenis intercepts all scroll input and emits continuous, eased deltas
- *     on every RAF tick (even between discrete wheel notches).
- *  2. Lenis's `scroll` event calls `ScrollTrigger.update()` so GSAP's
- *     trigger positions stay in sync with Lenis's virtual scroll position.
- *  3. GSAP's ticker `lagSmoothing` is disabled so the two RAF loops
- *     don't fight each other.
- *  4. `scrub: true` (direct 1:1 link, no GSAP-side delay) — smoothness
- *     comes from Lenis, not from GSAP scrub lag.
- *  5. The `onUpdate` manual `tl.progress()` call is REMOVED — ScrollTrigger
- *     scrubs the timeline natively (faster, no callback overhead).
+ * Smooth-scroll stack (desktop):
+ *  1. Lenis intercepts scroll input and emits continuous, eased deltas.
+ *  2. Lenis's `scroll` event calls `ScrollTrigger.update()` to stay in sync.
+ *  3. GSAP's ticker `lagSmoothing` is disabled.
+ *  4. `scrub: true` direct 1:1 link without extra scrub lag.
  *
- * Layout/compositor fixes applied:
- *  - `contain: strict` removed from .cinematic-stage (was blocking compositor).
- *  - `will-change: transform` added to stage so the browser promotes it.
- *  - All animated panels already have `will-change: transform, opacity` via CSS.
- *  - css `html { scroll-behavior: smooth }` removed (fights Lenis).
- *  - `prefers-reduced-motion`: Lenis is destroyed, ScrollTrigger markers
- *    are off; all panels set to fully visible, no animation.
- *
- * Timeline labels (% of total duration = 100 units):
- *   0    hero enters (already visible)
- *   3    hero starts fading out
- *   18   hero fully gone
- *   20   tint rises
- *   25   about enters
- *   35   about exits start
- *   43   about gone / tint clears
- *   44   stack scene peeks in
- *   48   passions enter
- *   66   passions exit start
- *   73   passions gone / tint clears / stack fades
- *   75   contact enters
- *   88   contact fully settled
- *   100  end hold
+ * Mobile / touch (< 768px):
+ *  - Lenis and ScrollTrigger are skipped completely.
+ *  - Native document flow with high-performance 120Hz touch scroll.
+ *  - All panels are visible and interactive.
  */
 export function useScrollTimeline(refs: ScrollTimelineRefs) {
   useEffect(() => {
@@ -87,8 +63,11 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       if (!section || !hero) return
 
-      // ── Reduced motion: skip all animation ──────────────────────────────
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // ── Detect reduced motion or mobile viewport (< 768px) ──────────────
+      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const isMobile  = window.matchMedia('(max-width: 768px)').matches
+
+      if (isReduced || isMobile) {
         ;[hero, about, passions, contact].forEach((el) => {
           if (!el) return
           el.style.opacity = '1'
@@ -97,25 +76,42 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
           el.style.pointerEvents = 'auto'
         })
         if (stackScene) {
-          stackScene.style.opacity = '1'
-          stackScene.style.visibility = 'visible'
+          stackScene.style.opacity = isMobile ? '0' : '1'
+          stackScene.style.visibility = isMobile ? 'hidden' : 'visible'
         }
+        if (tint) {
+          tint.style.opacity = '0'
+          tint.style.display = 'none'
+        }
+
+        const scrollToSection = (id: string) => {
+          if (id === 'hero' || id === 'top') {
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+            return
+          }
+          const targetEl = document.getElementById(id)
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth' })
+          }
+        }
+
+        ;(section as HTMLElement & { __scrollToSection?: (id: string) => void }).__scrollToSection =
+          scrollToSection
+
         return
       }
 
       // ── Kill GSAP lag smoothing so it doesn't fight Lenis ───────────────
-      // Lenis is the one source of scroll smoothing; GSAP should track it 1:1.
       gsap.ticker.lagSmoothing(0)
 
       // ── Lenis setup ─────────────────────────────────────────────────────
       const lenis = new Lenis({
-        duration        : 1.1,     // smoothing window in seconds
+        duration        : 1.1,
         easing          : (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         orientation     : 'vertical',
         gestureOrientation: 'vertical',
         smoothWheel     : true,
         touchMultiplier : 2,
-        // Let Lenis drive RAF — we sync via gsap.ticker below
         autoRaf         : false,
       })
 
@@ -123,7 +119,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       const tickerFn = (time: number) => lenis.raf(time * 1000)
       gsap.ticker.add(tickerFn)
 
-      // Wire Lenis scroll → ScrollTrigger.update so trigger positions stay in sync
+      // Wire Lenis scroll → ScrollTrigger.update
       lenis.on('scroll', ScrollTrigger.update)
 
       cleanupFns.push(() => {
@@ -144,9 +140,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       if (tint)       gsap.set(tint, { opacity: 0 })
 
       // ── Master timeline (100 units) ──────────────────────────────────────
-      // Built as ONE paused timeline, scrubbed directly by ScrollTrigger.
-      // No onUpdate callback — ScrollTrigger scrubs natively via its
-      // internal link() mechanism (faster, same-frame, no extra overhead).
       const tl = gsap.timeline({ paused: true })
 
       // Hero exits (3 → 18)
@@ -161,11 +154,8 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       // Tint rises for About (17 → 25)
       if (tint) {
         tl.to(tint, { opacity: 0.82, ease: 'power2.out', duration: 8 }, 17)
-        // Tint clears after About exits (38 → 44)
         tl.to(tint, { opacity: 0,    ease: 'power2.in',  duration: 6 }, 38)
-        // Tint rises again for Passions (47 → 52)
         tl.to(tint, { opacity: 0.82, ease: 'power2.out', duration: 5 }, 47)
-        // Tint clears after Passions exits (66 → 73)
         tl.to(tint, { opacity: 0,    ease: 'power2.in',  duration: 7 }, 66)
       }
 
@@ -227,52 +217,18 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       }
 
       // ── End hold ──────────────────────────────────────────────────────────
-      // Extend the timeline to exactly 100 units so progress values in
-      // navPanelMap map 1:1 to the documented timeline labels.
-      // Without this, the timeline's totalDuration = 88 (last tween end),
-      // and progress 0.27 would land at position 23.76 instead of 27.
       tl.set({}, {}, 100)
 
       // ── ScrollTrigger directly scrubs the master timeline ────────────────
-      // `scrub: true` = direct 1:1 link (no GSAP-side smoothing).
-      // All motion smoothness comes from Lenis's continuous deltas.
-
       const st = ScrollTrigger.create({
         trigger    : section,
         start      : 'top top',
         end        : `+=${SCROLL_LENGTH}`,
         scrub      : true,
-        animation  : tl,           // native link — no onUpdate callback needed
+        animation  : tl,
       })
 
-      // ── Navbar scroll-to helpers ──────────────────────────────────────────
-      // Clicking a nav link moves the real scroll position to the target offset
-      // and NOTHING else. All panel visibility/opacity/transforms are driven
-      // exclusively by the one ScrollTrigger-linked timeline (st → tl), so there
-      // is only ever one source of truth for "what should be visible."
-      //
-      // Rapid-click guard: Lenis's scrollTo() already cancels any in-flight
-      // scrollTo internally when called again, so no explicit stop/start is
-      // needed. We do NOT call lenis.stop()/lenis.start() here — doing so
-      // desyncs Lenis's virtual scroll from window.scrollY and causes the
-      // sticky stage to appear to "drift" (trôi).
-      //
-      // IMPORTANT: Do NOT add an onComplete callback that calls window.scrollTo()
-      // or mutates lenis.scroll/lenis.target. Doing so sets the native scroll
-      // position behind Lenis's back, which Lenis detects as an external scroll
-      // change and re-animates toward — producing a visible "double scroll."
-      // Lenis.scrollTo() with force:true already converges to the exact target.
-      //
-      // Duration is proportional to pixel distance (min 0.6s, max 1.8s) so
-      // short jumps (e.g. About → Stack) are snappy while long jumps
-      // (Contact → Hero) still feel smooth.
-
-      // Progress values correspond to timeline positions (0–100).
-      // Each value targets the midpoint of the panel's fully-visible window.
-      //   about:    enters 25→33, exits 35→43, fully visible 33–35 → target 33
-      //   stack:    scene 48–67, passions 56–69, both visible 56–67 → target 60
-      //   contact:  enters 75→88, fully settled at 88 → target 88
-
+      // ── Navbar scroll-to helpers (Desktop) ────────────────────────────────
       const navPanelMap: Record<string, { progress: number }> = {
         hero    : { progress: 0    },
         about   : { progress: 0.33 },
@@ -285,27 +241,13 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         const sectionTop    = section.getBoundingClientRect().top + window.scrollY
         const targetScrollY = sectionTop + def.progress * SCROLL_LENGTH
 
-        const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        if (isReduced) {
-          // Instant jump — no smooth scroll when user prefers reduced motion.
-          window.scrollTo({ top: targetScrollY, behavior: 'instant' as ScrollBehavior })
-          // Force-sync Lenis so it doesn't try to "correct" the scroll position later.
-          lenis.scroll = targetScrollY
-          lenis.target = targetScrollY
-          ScrollTrigger.update()
-          return
-        }
-
-        // Duration proportional to distance: ~0.6s for short hops, up to 1.8s
-        // for full-page scrolls. 800px ≈ 0.6s, 5000px ≈ 1.8s.
         const distance = Math.abs(targetScrollY - window.scrollY)
         const duration = Math.min(1.8, Math.max(0.6, distance / 3000))
 
         lenis.scrollTo(targetScrollY, {
           duration,
-          lock: true,            // block user scroll input during programmatic scroll
-          force: true,           // force even if already at a similar position
-          // Exponential ease-out that converges exactly to 1.0 — no overshoot.
+          lock: true,
+          force: true,
           easing: (t: number) => 1 - Math.pow(1 - t, 4),
         })
       }

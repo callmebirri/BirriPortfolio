@@ -12,10 +12,6 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
       ref={ref}
       id="contact"
       className="copy-layer flex items-center justify-center px-8 md:px-16 text-center"
-      style={{
-        inset: 0,
-        height: '100%',
-      }}
       aria-label="Contact"
     >
       <div className="flex flex-col gap-4">

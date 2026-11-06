@@ -31,7 +31,7 @@ export default function Header() {
           display: 'grid',
           gridTemplateColumns: '1fr auto 1fr',
           alignItems: 'center',
-          padding: '1.25rem 3rem',
+          padding: '1.25rem clamp(1.25rem, 5vw, 3rem)',
         }}
       >
         {/* Col 1 — Logo (left-aligned inside its column) */}
