@@ -48,11 +48,13 @@ const NarrativePanelAboutMe = forwardRef<HTMLElement>((_, ref) => {
             maxWidth: '54ch',
           }}
         >
-          Hey, I&apos;m Bui Doan Quang Huy — a student from Vietnam who somehow spends way too
-          much time writing code. Most of my projects start with &ldquo;this could be fun&rdquo;
-          and end with me debugging at 2AM. I enjoy building things people can actually use,
-          solving programming problems, and messing around with Minecraft plugins, Android apps,
-          or whatever catches my interest that week. Still making mistakes, still having fun.
+          Hey, I'm Bui Doan Quang Huy, just some dude from Vietnam who spends an unhealthy amount of time messing with code.
+
+          I build random stuff, break things, fix them (sometimes), and occasionally wonder why the hell I started in the first place. Mostly into C++, Java, Minecraft plugins, Android stuff, and whatever rabbit hole I happen to fall into.
+
+          Not here to change the world or build the next big thing. Just wanna make cool shit, solve some problems, and have a good time doing it.
+
+          Still learning, still breaking stuff, still shipping.
         </p>
 
         {/* Quick facts */}
