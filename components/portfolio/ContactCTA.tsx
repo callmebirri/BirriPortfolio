@@ -71,6 +71,14 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
             Discord
           </a>
         </div>
+
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-medium" style={{ color: 'var(--ink-secondary)' }}>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ background: '#35b875', boxShadow: '0 0 0 4px rgba(53, 184, 117, 0.14)' }} aria-hidden="true" />
+            Ready for work
+          </span>
+          <span>UTC+7 · Vietnam</span>
+        </div>
       </div>
     </section>
   )

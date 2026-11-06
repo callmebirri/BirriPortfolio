@@ -1,6 +1,6 @@
 'use client'
 
-import { forwardRef } from 'react'
+import { forwardRef, useMemo, useState } from 'react'
 import { passions, techStack } from '@/content/stack'
 
 /**
@@ -14,7 +14,15 @@ const categoryColor: Record<string, string> = {
   tool:      '#FFF5F8',
 }
 
+const categories = ['all', 'language', 'framework', 'tool'] as const
+
 const NarrativePanelPassions = forwardRef<HTMLElement>((_, ref) => {
+  const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>('all')
+  const visibleTools = useMemo(
+    () => activeCategory === 'all' ? techStack : techStack.filter((tool) => tool.category === activeCategory),
+    [activeCategory],
+  )
+
   return (
     <section
       ref={ref}
@@ -73,10 +81,27 @@ const NarrativePanelPassions = forwardRef<HTMLElement>((_, ref) => {
             className="text-xs font-semibold tracking-widest uppercase mb-3"
             style={{ color: 'var(--ink-secondary)', letterSpacing: '0.2em' }}
           >
-            Tech Stack
+            Toolbox
           </p>
+          <div className="mb-4 flex flex-wrap gap-2" role="group" aria-label="Filter toolbox">
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setActiveCategory(category)}
+                className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors"
+                style={{
+                  borderColor: activeCategory === category ? 'var(--accent-color)' : 'rgba(40, 28, 34, 0.18)',
+                  background: activeCategory === category ? 'var(--accent-color)' : 'transparent',
+                  color: activeCategory === category ? '#fff' : 'var(--ink-secondary)',
+                }}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
           <ul className="flex flex-wrap gap-2 list-none m-0 p-0" aria-label="Technologies">
-            {techStack.map((t) => (
+            {visibleTools.map((t) => (
               <li key={t.label}>
                 <span
                   className="chip text-xs"
