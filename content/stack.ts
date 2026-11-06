@@ -33,7 +33,6 @@ export const passions = [
 
 export const stats = [
   { value: '15', label: 'Years Old' },
-  { value: '22+', label: 'Projects' },
   { value: '7', label: 'Languages' },
 ]
 
@@ -54,6 +53,5 @@ export const timelineBeats = {
   passionsEnter: [0.48, 0.58],
   passionsHold:  [0.58, 0.69],
   worldRefocus:  [0.69, 0.74],
-  railEnter:     [0.75, 0.96],
   contactSettle: [0.91, 1.00],
 } as const
