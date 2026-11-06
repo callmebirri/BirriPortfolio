@@ -11,34 +11,30 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
     <section
       ref={ref}
       id="contact"
-      className="copy-layer flex items-start justify-between px-8 md:px-16"
+      className="copy-layer flex items-center justify-center px-8 md:px-16 text-center"
       style={{
         opacity: 0,
         pointerEvents: 'none',
-        // Only occupy the top ~38% of the stage so Projects Rail
-        // fills the bottom without overlap.
-        top: 0,
-        bottom: 'auto',
-        height: '42%',
-        alignItems: 'flex-end',
-        paddingBottom: '1.5rem',
+        inset: 0,
+        height: '100%',
       }}
       aria-label="Contact"
     >
       <div className="flex flex-col gap-4">
         <p
-          className="text-xs font-semibold tracking-widest uppercase"
-          style={{ color: 'var(--accent-color)', letterSpacing: '0.2em' }}
+          className="text-sm md:text-base font-semibold tracking-widest uppercase"
+          style={{ color: 'var(--accent-color)', letterSpacing: '0.28em' }}
         >
           Say hello
         </p>
         <h2
           className="font-serif text-balance"
           style={{
-            fontSize: 'clamp(1.4rem, 3.5vw, 2.4rem)',
+            fontSize: 'clamp(2rem, 6vw, 4.6rem)',
             fontWeight: 400,
             color: 'var(--ink)',
-            lineHeight: 1.1,
+            lineHeight: 1.02,
+            letterSpacing: '-0.03em',
           }}
         >
           Let&apos;s build something
@@ -46,7 +42,7 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
           <em style={{ color: 'var(--accent-color)' }}>together.</em>
         </h2>
 
-        <div className="flex flex-wrap items-center gap-3 mt-1">
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-1">
           <a href="mailto:contact@qhuyy.tech" className="btn-accent">
             Get in touch
           </a>
@@ -74,6 +70,14 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
             </svg>
             Discord
           </a>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs font-medium" style={{ color: 'var(--ink-secondary)' }}>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ background: '#35b875', boxShadow: '0 0 0 4px rgba(53, 184, 117, 0.14)' }} aria-hidden="true" />
+            Ready for work
+          </span>
+          <span>UTC+7 · Vietnam</span>
         </div>
       </div>
     </section>
