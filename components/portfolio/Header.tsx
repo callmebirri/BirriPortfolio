@@ -51,7 +51,6 @@ export default function Header() {
           {[
             { label: 'About',    target: 'about'    },
             { label: 'Stack',    target: 'stack'    },
-            { label: 'Projects', target: 'projects' },
           ].map(({ label, target }) => (
             <li key={target}>
               <button

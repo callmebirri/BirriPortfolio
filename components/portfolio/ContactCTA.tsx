@@ -11,17 +11,12 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
     <section
       ref={ref}
       id="contact"
-      className="copy-layer flex items-start justify-between px-8 md:px-16"
+      className="copy-layer flex items-center justify-center px-8 md:px-16 text-center"
       style={{
         opacity: 0,
         pointerEvents: 'none',
-        // Only occupy the top ~38% of the stage so Projects Rail
-        // fills the bottom without overlap.
-        top: 0,
-        bottom: 'auto',
-        height: '42%',
-        alignItems: 'flex-end',
-        paddingBottom: '1.5rem',
+        inset: 0,
+        height: '100%',
       }}
       aria-label="Contact"
     >
@@ -46,7 +41,7 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
           <em style={{ color: 'var(--accent-color)' }}>together.</em>
         </h2>
 
-        <div className="flex flex-wrap items-center gap-3 mt-1">
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-1">
           <a href="mailto:contact@qhuyy.tech" className="btn-accent">
             Get in touch
           </a>

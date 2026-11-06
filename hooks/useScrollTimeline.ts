@@ -9,7 +9,6 @@ export interface ScrollTimelineRefs {
   aboutRef:      React.RefObject<HTMLElement | null>
   passionsRef:   React.RefObject<HTMLElement | null>
   stackSceneRef: React.RefObject<HTMLDivElement | null>
-  projectsRef:   React.RefObject<HTMLElement | null>
   contactRef:    React.RefObject<HTMLElement | null>
   tintRef:       React.RefObject<HTMLDivElement | null>
   blobFieldRef:  React.RefObject<HTMLDivElement | null>
@@ -51,8 +50,8 @@ export interface ScrollTimelineRefs {
  *   48   passions enter
  *   66   passions exit start
  *   73   passions gone / tint clears / stack fades
- *   75   projects + contact enter together
- *   88   projects + contact fully settled
+ *   75   contact enters
+ *   88   contact fully settled
  *   100  end hold
  */
 export function useScrollTimeline(refs: ScrollTimelineRefs) {
@@ -74,7 +73,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       const {
         sectionRef, heroRef, aboutRef,
-        passionsRef, stackSceneRef, projectsRef,
+        passionsRef, stackSceneRef,
         contactRef, tintRef, blobFieldRef, motifLayerRef,
       } = refs
 
@@ -83,7 +82,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       const about      = aboutRef.current
       const passions   = passionsRef.current
       const stackScene = stackSceneRef.current
-      const projects   = projectsRef.current
       const contact    = contactRef.current
       const tint       = tintRef.current
 
@@ -91,7 +89,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       // ── Reduced motion: skip all animation ──────────────────────────────
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        ;[hero, about, passions, projects, contact].forEach((el) => {
+        ;[hero, about, passions, contact].forEach((el) => {
           if (!el) return
           el.style.opacity = '1'
           el.style.transform = 'none'
@@ -135,7 +133,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       // ── Set initial states ───────────────────────────────────────────────
       gsap.set(hero, { opacity: 1, y: 0, pointerEvents: 'auto' })
-      gsap.set([about, passions, projects, contact].filter(Boolean), {
+      gsap.set([about, passions, contact].filter(Boolean), {
         opacity: 0, y: 0, pointerEvents: 'none',
       })
       if (stackScene) gsap.set(stackScene, { opacity: 0 })
@@ -209,18 +207,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         }, 69)
       }
 
-      // Projects + Contact enter together (75 → 88)
-      if (projects) {
-        tl.fromTo(projects,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1, y: 0, ease: 'power3.out', duration: 13,
-            onStart()           { projects.style.pointerEvents = 'auto' },
-            onReverseComplete() { projects.style.pointerEvents = 'none' },
-          },
-          75,
-        )
-      }
+      // Contact enters (75 → 88)
       if (contact) {
         tl.fromTo(contact,
           { opacity: 0, y: -20 },
@@ -272,19 +259,18 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       //
       // Duration is proportional to pixel distance (min 0.6s, max 1.8s) so
       // short jumps (e.g. About → Stack) are snappy while long jumps
-      // (Projects → Hero) still feel smooth.
+      // (Contact → Hero) still feel smooth.
 
       // Progress values correspond to timeline positions (0–100).
       // Each value targets the midpoint of the panel's fully-visible window.
       //   about:    enters 25→33, exits 35→43, fully visible 33–35 → target 33
       //   stack:    scene 48–67, passions 56–69, both visible 56–67 → target 60
-      //   projects: enters 75→88, fully settled at 88 → target 88
-      //   contact:  enters 75→88, same as projects → target 88
+//   contact:  enters 75→88, fully settled at 88 → target 88
+
       const navPanelMap: Record<string, { progress: number }> = {
         hero    : { progress: 0    },
         about   : { progress: 0.33 },
         stack   : { progress: 0.60 },
-        projects: { progress: 0.88 },
         contact : { progress: 0.88 },
       }
 

@@ -11,7 +11,6 @@ import Header from './Header'
 import HeroIntro from './HeroIntro'
 import NarrativePanelAboutMe from './NarrativePanelAboutMe'
 import NarrativePanelPassions from './NarrativePanelPassions'
-import ProjectsRail from './ProjectsRail'
 import ContactCTA from './ContactCTA'
 
 /**
@@ -26,8 +25,7 @@ import ContactCTA from './ContactCTA'
  *       Layer 20    Hero (exits early)
  *       Layer 21    NarrativePanelAboutMe (enters at 25%)
  *       Layer 22    NarrativePanelPassions (enters at 48%)
- *       Layer 23    ProjectsRail (enters at 75%)
- *       Layer 24    ContactCTA (enters at 91%)
+ *       Layer 23    ContactCTA (enters at 75%)
  */
 export default function CinematicPortfolio() {
   // Stage refs
@@ -37,7 +35,6 @@ export default function CinematicPortfolio() {
   const heroRef       = useRef<HTMLElement>(null)
   const aboutRef      = useRef<HTMLElement>(null)
   const passionsRef   = useRef<HTMLElement>(null)
-  const projectsRef   = useRef<HTMLElement>(null)
   const contactRef    = useRef<HTMLElement>(null)
   // World layer refs (pointer parallax)
   const blobFieldRef  = useRef<HTMLDivElement>(null)
@@ -52,7 +49,6 @@ export default function CinematicPortfolio() {
     aboutRef,
     passionsRef,
     stackSceneRef,
-    projectsRef,
     contactRef,
     tintRef,
     blobFieldRef,
@@ -98,7 +94,6 @@ export default function CinematicPortfolio() {
         <HeroIntro ref={heroRef} />
         <NarrativePanelAboutMe ref={aboutRef} />
         <NarrativePanelPassions ref={passionsRef} />
-        <ProjectsRail ref={projectsRef} />
         <ContactCTA ref={contactRef} />
 
       </div>
