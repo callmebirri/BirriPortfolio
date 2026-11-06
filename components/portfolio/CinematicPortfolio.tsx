@@ -12,6 +12,7 @@ import HeroIntro from './HeroIntro'
 import NarrativePanelAboutMe from './NarrativePanelAboutMe'
 import NarrativePanelPassions from './NarrativePanelPassions'
 import ContactCTA from './ContactCTA'
+import JourneyTimeline from './JourneyTimeline'
 
 /**
  * CinematicPortfolio — root client component.
@@ -89,6 +90,7 @@ export default function CinematicPortfolio() {
 
         {/* ── Header / nav (z 30) ─────────────────────────────────── */}
         <Header />
+        <JourneyTimeline />
 
         {/* ── Narrative layers (z 20) ─────────────────────────────── */}
         <HeroIntro ref={heroRef} />
