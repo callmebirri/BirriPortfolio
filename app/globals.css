@@ -180,7 +180,13 @@
   pointer-events: none;
 }
 
-.copy-layer > * {
+.copy-layer:not(#hero) {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.copy-layer[style*="pointer-events: auto"] > *,
+.copy-layer.active > * {
   pointer-events: auto;
 }
 

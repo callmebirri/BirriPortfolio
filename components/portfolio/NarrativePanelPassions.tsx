@@ -5,7 +5,7 @@ import { passions, techStack } from '@/content/stack'
 
 /**
  * Narrative panel B — Passions + tech stack chips.
- * Starts at opacity 0; enters at scroll p ≈ 0.48.
+ * Starts hidden; enters at scroll p ≈ 0.48.
  */
 
 const categoryColor: Record<string, string> = {
@@ -28,7 +28,6 @@ const NarrativePanelPassions = forwardRef<HTMLElement>((_, ref) => {
       ref={ref}
       id="stack"
       className="copy-layer flex items-center justify-center px-8 md:px-16"
-      style={{ opacity: 0, pointerEvents: 'none' }}
       aria-label="Passions and tech stack"
     >
       <div
@@ -89,7 +88,7 @@ const NarrativePanelPassions = forwardRef<HTMLElement>((_, ref) => {
                 key={category}
                 type="button"
                 onClick={() => setActiveCategory(category)}
-                className="rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors"
+                className="cursor-pointer rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] transition-all duration-200"
                 style={{
                   borderColor: activeCategory === category ? 'var(--accent-color)' : 'rgba(40, 28, 34, 0.18)',
                   background: activeCategory === category ? 'var(--accent-color)' : 'transparent',

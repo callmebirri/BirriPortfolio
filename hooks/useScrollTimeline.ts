@@ -92,10 +92,14 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         ;[hero, about, passions, contact].forEach((el) => {
           if (!el) return
           el.style.opacity = '1'
+          el.style.visibility = 'visible'
           el.style.transform = 'none'
           el.style.pointerEvents = 'auto'
         })
-        if (stackScene) stackScene.style.opacity = '1'
+        if (stackScene) {
+          stackScene.style.opacity = '1'
+          stackScene.style.visibility = 'visible'
+        }
         return
       }
 
@@ -132,11 +136,11 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       section.style.height = `${SCROLL_LENGTH + window.innerHeight}px`
 
       // ── Set initial states ───────────────────────────────────────────────
-      gsap.set(hero, { opacity: 1, y: 0, pointerEvents: 'auto' })
+      gsap.set(hero, { autoAlpha: 1, y: 0, pointerEvents: 'auto' })
       gsap.set([about, passions, contact].filter(Boolean), {
-        opacity: 0, y: 0, pointerEvents: 'none',
+        autoAlpha: 0, y: 0, pointerEvents: 'none',
       })
-      if (stackScene) gsap.set(stackScene, { opacity: 0 })
+      if (stackScene) gsap.set(stackScene, { autoAlpha: 0 })
       if (tint)       gsap.set(tint, { opacity: 0 })
 
       // ── Master timeline (100 units) ──────────────────────────────────────
@@ -147,7 +151,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       // Hero exits (3 → 18)
       tl.to(hero, {
-        opacity: 0, y: -44,
+        autoAlpha: 0, y: -44,
         ease: 'power2.in',
         duration: 15,
         onStart()           { hero.style.pointerEvents = 'none' },
@@ -168,9 +172,9 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       // About enters (25 → 33)
       if (about) {
         tl.fromTo(about,
-          { opacity: 0, y: 32 },
+          { autoAlpha: 0, y: 32 },
           {
-            opacity: 1, y: 0, ease: 'power2.out', duration: 8,
+            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 8,
             onStart()           { about.style.pointerEvents = 'auto' },
             onReverseComplete() { about.style.pointerEvents = 'none' },
           },
@@ -178,23 +182,24 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         )
         // About exits (35 → 43)
         tl.to(about, {
-          opacity: 0, y: -22, ease: 'power2.in', duration: 8,
-          onStart() { about.style.pointerEvents = 'none' },
+          autoAlpha: 0, y: -22, ease: 'power2.in', duration: 8,
+          onStart()           { about.style.pointerEvents = 'none' },
+          onReverseComplete() { about.style.pointerEvents = 'auto' },
         }, 35)
       }
 
       // Stack scene enters with Passions (44 → 48), exits after Passions (67 → 73)
       if (stackScene) {
-        tl.to(stackScene, { opacity: 1, ease: 'power2.out', duration: 4 }, 44)
-        tl.to(stackScene, { opacity: 0, ease: 'power2.in',  duration: 6 }, 67)
+        tl.to(stackScene, { autoAlpha: 1, ease: 'power2.out', duration: 4 }, 44)
+        tl.to(stackScene, { autoAlpha: 0, ease: 'power2.in',  duration: 6 }, 67)
       }
 
       // Passions enters (48 → 56)
       if (passions) {
         tl.fromTo(passions,
-          { opacity: 0, y: 28 },
+          { autoAlpha: 0, y: 28 },
           {
-            opacity: 1, y: 0, ease: 'power2.out', duration: 8,
+            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 8,
             onStart()           { passions.style.pointerEvents = 'auto' },
             onReverseComplete() { passions.style.pointerEvents = 'none' },
           },
@@ -202,17 +207,18 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         )
         // Passions exits (69 → 75)
         tl.to(passions, {
-          opacity: 0, y: -22, ease: 'power2.in', duration: 6,
-          onStart() { passions.style.pointerEvents = 'none' },
+          autoAlpha: 0, y: -22, ease: 'power2.in', duration: 6,
+          onStart()           { passions.style.pointerEvents = 'none' },
+          onReverseComplete() { passions.style.pointerEvents = 'auto' },
         }, 69)
       }
 
       // Contact enters (75 → 88)
       if (contact) {
         tl.fromTo(contact,
-          { opacity: 0, y: -20 },
+          { autoAlpha: 0, y: -20 },
           {
-            opacity: 1, y: 0, ease: 'power2.out', duration: 13,
+            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 13,
             onStart()           { contact.style.pointerEvents = 'auto' },
             onReverseComplete() { contact.style.pointerEvents = 'none' },
           },
@@ -265,7 +271,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       // Each value targets the midpoint of the panel's fully-visible window.
       //   about:    enters 25→33, exits 35→43, fully visible 33–35 → target 33
       //   stack:    scene 48–67, passions 56–69, both visible 56–67 → target 60
-//   contact:  enters 75→88, fully settled at 88 → target 88
+      //   contact:  enters 75→88, fully settled at 88 → target 88
 
       const navPanelMap: Record<string, { progress: number }> = {
         hero    : { progress: 0    },

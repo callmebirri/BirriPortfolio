@@ -13,8 +13,6 @@ const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
       id="contact"
       className="copy-layer flex items-center justify-center px-8 md:px-16 text-center"
       style={{
-        opacity: 0,
-        pointerEvents: 'none',
         inset: 0,
         height: '100%',
       }}

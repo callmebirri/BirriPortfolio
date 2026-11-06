@@ -5,7 +5,7 @@ import { quickFacts } from '@/content/stack'
 
 /**
  * Narrative panel A — About Me.
- * Starts at opacity 0; enters at scroll p ≈ 0.25.
+ * Starts hidden; enters at scroll p ≈ 0.25.
  */
 const NarrativePanelAboutMe = forwardRef<HTMLElement>((_, ref) => {
   return (
@@ -13,7 +13,6 @@ const NarrativePanelAboutMe = forwardRef<HTMLElement>((_, ref) => {
       ref={ref}
       id="about"
       className="copy-layer flex items-center justify-center px-8 md:px-16"
-      style={{ opacity: 0, pointerEvents: 'none' }}
       aria-label="About Me"
     >
       <div style={{ maxWidth: '660px', width: '100%' }}>
