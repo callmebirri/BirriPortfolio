@@ -58,6 +58,14 @@ export default function CinematicPortfolio() {
 
   return (
     <main ref={sectionRef} className="cinematic-section" id="top">
+      {[{ id: 'hero', progress: 0 }, { id: 'about', progress: 0.25 }, { id: 'stack', progress: 0.48 }, { id: 'contact', progress: 0.75 }].map((marker) => (
+        <span
+          key={marker.id}
+          data-journey-marker={marker.id}
+          aria-hidden="true"
+          style={{ position: 'absolute', top: marker.progress === 0 ? '50svh' : `calc(${marker.progress * 100}% - ${marker.progress * 100}svh)`, left: 0, width: 1, height: 1, pointerEvents: 'none' }}
+        />
+      ))}
       <div ref={stageRef} className="cinematic-stage">
 
         {/* ── World layers (z 0–9) ────────────────────────────────── */}
