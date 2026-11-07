@@ -69,7 +69,7 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
                 </ul>
                 <a
                   className="btn-ghost mt-3 justify-center text-[13.5px] md:text-[14px] font-bold"
-                  style={{ color: '#E4608A' }}
+                  style={{ backgroundColor: '#FFC0CB', color: '#000000', borderColor: '#FFC0CB' }}
                   href={project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
