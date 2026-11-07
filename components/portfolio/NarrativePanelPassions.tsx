@@ -21,7 +21,7 @@ const NarrativePanelPassions = forwardRef<HTMLElement>((_, ref) => {
   return (
     <section
       ref={ref}
-      id="stack"
+      id="passions"
       className="copy-layer flex items-center justify-center px-8 md:px-16"
       aria-label="Passions and tech stack"
     >

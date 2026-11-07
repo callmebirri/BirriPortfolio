@@ -34,7 +34,9 @@ export default function Header() {
         <ul className="hidden md:flex items-center gap-8 list-none m-0 p-0" role="list">
           {[
             { label: 'About',    target: 'about'    },
-            { label: 'Stack',    target: 'stack'    },
+            { label: 'Passions', target: 'passions' },
+            { label: 'Projects', target: 'projects' },
+            { label: 'Say hello', target: 'contact' },
           ].map(({ label, target }) => (
             <li key={target}>
               <button
@@ -50,15 +52,7 @@ export default function Header() {
           ))}
         </ul>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <a
-            href="mailto:contact@qhuyy.tech"
-            className="btn-accent text-sm py-2.5 px-5"
-            aria-label="Get in touch via email"
-          >
-            Get in touch
-          </a>
-        </div>
+        <div />
       </nav>
     </header>
   )

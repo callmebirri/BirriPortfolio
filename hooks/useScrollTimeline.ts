@@ -233,7 +233,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       const navPanelMap: Record<string, { progress: number }> = {
         hero    : { progress: 0    },
         about   : { progress: 0.28 },
-        stack   : { progress: 0.55 },
+        passions: { progress: 0.55 },
         projects: { progress: 0.77 },
         contact : { progress: 0.96 },
       }
