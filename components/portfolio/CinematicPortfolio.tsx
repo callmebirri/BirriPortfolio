@@ -14,30 +14,13 @@ import NarrativePanelPassions from './NarrativePanelPassions'
 import ContactCTA from './ContactCTA'
 import JourneyTimeline from './JourneyTimeline'
 
-/**
- * CinematicPortfolio — root client component.
- *
- * Component tree:
- *   <main> cinematic-section (sets total scroll height)
- *     <div> cinematic-stage (sticky viewport, pinned by GSAP)
- *       Layer 0–9   World: background gradient → blob field → motif layer → stack scene
- *       Layer 10    Tint overlay (rises/falls per narrative beat)
- *       Layer 30    Header / nav
- *       Layer 20    Hero (exits early)
- *       Layer 21    NarrativePanelAboutMe (enters at 25%)
- *       Layer 22    NarrativePanelPassions (enters at 48%)
- *       Layer 23    ContactCTA (enters at 75%)
- */
 export default function CinematicPortfolio() {
-  // Stage refs
   const sectionRef    = useRef<HTMLElement>(null)
   const stageRef      = useRef<HTMLDivElement>(null)
-  // Narrative refs
   const heroRef       = useRef<HTMLElement>(null)
   const aboutRef      = useRef<HTMLElement>(null)
   const passionsRef   = useRef<HTMLElement>(null)
   const contactRef    = useRef<HTMLElement>(null)
-  // World layer refs (pointer parallax)
   const blobFieldRef  = useRef<HTMLDivElement>(null)
   const motifLayerRef = useRef<HTMLDivElement>(null)
   const stackSceneRef = useRef<HTMLDivElement>(null)
@@ -59,8 +42,6 @@ export default function CinematicPortfolio() {
   return (
     <main ref={sectionRef} className="cinematic-section" id="top">
       <div ref={stageRef} className="cinematic-stage">
-
-        {/* ── World layers (z 0–9) ────────────────────────────────── */}
         <div className="world-layer" aria-hidden="true">
           <BackgroundGradient />
           <div ref={blobFieldRef} style={{ position: 'absolute', inset: 0 }}>
@@ -74,7 +55,6 @@ export default function CinematicPortfolio() {
           </div>
         </div>
 
-        {/* ── Tint overlay (z 10) ─────────────────────────────────── */}
         <div
           ref={tintRef}
           aria-hidden="true"
@@ -88,16 +68,13 @@ export default function CinematicPortfolio() {
           }}
         />
 
-        {/* ── Header / nav (z 30) ─────────────────────────────────── */}
         <Header />
         <JourneyTimeline />
 
-        {/* ── Narrative layers (z 20) ─────────────────────────────── */}
         <HeroIntro ref={heroRef} />
         <NarrativePanelAboutMe ref={aboutRef} />
         <NarrativePanelPassions ref={passionsRef} />
         <ContactCTA ref={contactRef} />
-
       </div>
     </main>
   )

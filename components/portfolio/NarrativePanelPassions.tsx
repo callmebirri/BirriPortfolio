@@ -3,11 +3,6 @@
 import { forwardRef, useMemo, useState } from 'react'
 import { passions, techStack } from '@/content/stack'
 
-/**
- * Narrative panel B — Passions + tech stack chips.
- * Starts hidden; enters at scroll p ≈ 0.48.
- */
-
 const categoryColor: Record<string, string> = {
   language:  '#FFEDF3',
   framework: '#FFF0F5',
@@ -34,7 +29,6 @@ const NarrativePanelPassions = forwardRef<HTMLElement>((_, ref) => {
         className="flex flex-col md:flex-row gap-12 md:gap-16 items-start"
         style={{ maxWidth: '760px', width: '100%' }}
       >
-        {/* Left — Passions */}
         <div className="flex-1 min-w-0">
           <p
             className="text-xs font-semibold tracking-widest uppercase mb-3"
@@ -74,7 +68,6 @@ const NarrativePanelPassions = forwardRef<HTMLElement>((_, ref) => {
           </ul>
         </div>
 
-        {/* Right — Tech stack */}
         <div className="flex-1 min-w-0">
           <p
             className="text-xs font-semibold tracking-widest uppercase mb-3"

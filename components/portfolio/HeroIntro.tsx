@@ -3,10 +3,6 @@
 import { forwardRef } from 'react'
 import { stats } from '@/content/stack'
 
-/**
- * Hero — name, tagline, stat chips.
- * Fills the stage center; animated out by scroll timeline at p ≈ 0.03.
- */
 const HeroIntro = forwardRef<HTMLElement>((_, ref) => {
   return (
     <section
@@ -15,7 +11,6 @@ const HeroIntro = forwardRef<HTMLElement>((_, ref) => {
       className="copy-layer flex flex-col items-center justify-center text-center px-6"
       aria-label="Introduction"
     >
-      {/* Accent label */}
       <p
         className="text-xs font-semibold tracking-widest uppercase mb-4"
         style={{ color: 'var(--accent-color)', letterSpacing: '0.2em' }}
@@ -23,7 +18,6 @@ const HeroIntro = forwardRef<HTMLElement>((_, ref) => {
         Hi, I&apos;m birri
       </p>
 
-      {/* Name */}
       <h1
         className="font-serif text-balance"
         style={{
@@ -39,7 +33,6 @@ const HeroIntro = forwardRef<HTMLElement>((_, ref) => {
         <em style={{ color: 'var(--accent-color)', fontStyle: 'italic' }}>Quang Huy</em>
       </h1>
 
-      {/* Subtitle */}
       <p
         className="text-balance"
         style={{
@@ -54,7 +47,6 @@ const HeroIntro = forwardRef<HTMLElement>((_, ref) => {
         A beginner software engineer from Viet Nam :3
       </p>
 
-      {/* Stat chips */}
       <ul
         className="flex flex-wrap items-center justify-center gap-3 list-none m-0 p-0"
         aria-label="Quick stats"

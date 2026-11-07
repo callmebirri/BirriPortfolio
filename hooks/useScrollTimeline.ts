@@ -15,21 +15,6 @@ export interface ScrollTimelineRefs {
   motifLayerRef: React.RefObject<HTMLDivElement | null>
 }
 
-/**
- * useScrollTimeline — cinematic scroll choreography for desktop,
- * bypassed on mobile (< 768px) and prefers-reduced-motion for pure native touch scroll.
- *
- * Smooth-scroll stack (desktop):
- *  1. Lenis intercepts scroll input and emits continuous, eased deltas.
- *  2. Lenis's `scroll` event calls `ScrollTrigger.update()` to stay in sync.
- *  3. GSAP's ticker `lagSmoothing` is disabled.
- *  4. `scrub: true` direct 1:1 link without extra scrub lag.
- *
- * Mobile / touch (< 768px):
- *  - Lenis and ScrollTrigger are skipped completely.
- *  - Native document flow with high-performance 120Hz touch scroll.
- *  - All panels are visible and interactive.
- */
 export function useScrollTimeline(refs: ScrollTimelineRefs) {
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -63,7 +48,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       if (!section || !hero) return
 
-      // ── Detect reduced motion or mobile viewport (< 768px) ──────────────
       const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       const isMobile  = window.matchMedia('(max-width: 768px)').matches
 
@@ -101,10 +85,8 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         return
       }
 
-      // ── Kill GSAP lag smoothing so it doesn't fight Lenis ───────────────
       gsap.ticker.lagSmoothing(0)
 
-      // ── Lenis setup ─────────────────────────────────────────────────────
       const lenis = new Lenis({
         duration        : 1.1,
         easing          : (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -115,11 +97,9 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         autoRaf         : false,
       })
 
-      // Drive Lenis from GSAP's RAF ticker so both run in the same frame
       const tickerFn = (time: number) => lenis.raf(time * 1000)
       gsap.ticker.add(tickerFn)
 
-      // Wire Lenis scroll → ScrollTrigger.update
       lenis.on('scroll', ScrollTrigger.update)
 
       cleanupFns.push(() => {
@@ -127,11 +107,9 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         lenis.destroy()
       })
 
-      // ── Section scroll height ────────────────────────────────────────────
       const SCROLL_LENGTH = Math.max(window.innerHeight * 5, 3800)
       section.style.height = `${SCROLL_LENGTH + window.innerHeight}px`
 
-      // ── Set initial states ───────────────────────────────────────────────
       gsap.set(hero, { autoAlpha: 1, y: 0, pointerEvents: 'auto' })
       gsap.set([about, passions, contact].filter(Boolean), {
         autoAlpha: 0, y: 0, pointerEvents: 'none',
@@ -139,10 +117,8 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       if (stackScene) gsap.set(stackScene, { autoAlpha: 0 })
       if (tint)       gsap.set(tint, { opacity: 0 })
 
-      // ── Master timeline (100 units) ──────────────────────────────────────
       const tl = gsap.timeline({ paused: true })
 
-      // Hero exits (3 → 18)
       tl.to(hero, {
         autoAlpha: 0, y: -44,
         ease: 'power2.in',
@@ -151,7 +127,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         onReverseComplete() { hero.style.pointerEvents = 'auto' },
       }, 3)
 
-      // Tint rises for About (17 → 25)
       if (tint) {
         tl.to(tint, { opacity: 0.82, ease: 'power2.out', duration: 8 }, 17)
         tl.to(tint, { opacity: 0,    ease: 'power2.in',  duration: 6 }, 38)
@@ -159,7 +134,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         tl.to(tint, { opacity: 0,    ease: 'power2.in',  duration: 7 }, 66)
       }
 
-      // About enters (25 → 33)
       if (about) {
         tl.fromTo(about,
           { autoAlpha: 0, y: 32 },
@@ -170,7 +144,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
           },
           25,
         )
-        // About exits (35 → 43)
         tl.to(about, {
           autoAlpha: 0, y: -22, ease: 'power2.in', duration: 8,
           onStart()           { about.style.pointerEvents = 'none' },
@@ -178,13 +151,11 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         }, 35)
       }
 
-      // Stack scene enters with Passions (44 → 48), exits after Passions (67 → 73)
       if (stackScene) {
         tl.to(stackScene, { autoAlpha: 1, ease: 'power2.out', duration: 4 }, 44)
         tl.to(stackScene, { autoAlpha: 0, ease: 'power2.in',  duration: 6 }, 67)
       }
 
-      // Passions enters (48 → 56)
       if (passions) {
         tl.fromTo(passions,
           { autoAlpha: 0, y: 28 },
@@ -195,7 +166,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
           },
           48,
         )
-        // Passions exits (69 → 75)
         tl.to(passions, {
           autoAlpha: 0, y: -22, ease: 'power2.in', duration: 6,
           onStart()           { passions.style.pointerEvents = 'none' },
@@ -203,7 +173,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         }, 69)
       }
 
-      // Contact enters (75 → 88)
       if (contact) {
         tl.fromTo(contact,
           { autoAlpha: 0, y: -20 },
@@ -216,10 +185,8 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         )
       }
 
-      // ── End hold ──────────────────────────────────────────────────────────
       tl.set({}, {}, 100)
 
-      // ── ScrollTrigger directly scrubs the master timeline ────────────────
       const st = ScrollTrigger.create({
         trigger    : section,
         start      : 'top top',
@@ -228,7 +195,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         animation  : tl,
       })
 
-      // ── Navbar scroll-to helpers (Desktop) ────────────────────────────────
       const navPanelMap: Record<string, { progress: number }> = {
         hero    : { progress: 0    },
         about   : { progress: 0.33 },
@@ -255,7 +221,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       ;(section as HTMLElement & { __scrollToSection?: (id: string) => void }).__scrollToSection =
         scrollToSection
 
-      // ── Pointer parallax (fine pointer only) ────────────────────────────
       const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches
       if (!isCoarsePointer && blobFieldRef.current && motifLayerRef.current) {
         const blobEl  = blobFieldRef.current
@@ -275,7 +240,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         cleanupFns.push(() => window.removeEventListener('mousemove', onMouseMove))
       }
 
-      // ── Cleanup ──────────────────────────────────────────────────────────
       cleanupFns.push(() => {
         st.kill()
         tl.kill()
@@ -287,6 +251,5 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       killed = true
       cleanupFns.forEach((fn) => fn())
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }

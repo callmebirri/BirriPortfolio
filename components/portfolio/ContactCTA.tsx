@@ -2,10 +2,6 @@
 
 import { forwardRef } from 'react'
 
-/**
- * Contact CTA — "Get in touch" + social links.
- * Settles at scroll p ≈ 0.91 above the projects rail.
- */
 const ContactCTA = forwardRef<HTMLElement>((_, ref) => {
   return (
     <section

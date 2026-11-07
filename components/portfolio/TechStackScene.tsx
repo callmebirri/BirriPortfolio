@@ -2,13 +2,6 @@
 
 import { techStack } from '@/content/stack'
 
-/**
- * Floating tech-stack chip panorama.
- * Chips are scattered across the stage; their positions form
- * the "clean panorama" beat between About Me and Passions panels.
- */
-
-// Stable positions across the canvas (%, %) + slight rotation
 const positions: Array<{ x: number; y: number; rotate: number }> = [
   { x: 8,  y: 25, rotate: -8 },
   { x: 18, y: 60, rotate: 5 },

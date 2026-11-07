@@ -3,14 +3,6 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 import { projects } from '@/content/projects'
 
-/**
- * Horizontal projects card rail.
- * - Keyboard navigable (arrow keys)
- * - Pointer drag / swipe
- * - aria-live region announces on settle
- * - All cards are real <a> links to GitHub
- */
-
 const CARD_WIDTH  = 340
 const CARD_GAP    = 20
 const CARD_STEP   = CARD_WIDTH + CARD_GAP
@@ -36,21 +28,18 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
     setActiveIndex(clamped)
   }, [clamp])
 
-  // Drag threshold in pixels — only enter drag mode after moving past this.
-  // This lets simple clicks pass through to the <a> card links.
   const DRAG_THRESHOLD = 5
-  const pointerActive = useRef(false)   // pointer is down, but not necessarily dragging yet
+  const pointerActive = useRef(false)
   const viewportElRef = useRef<HTMLElement | null>(null)
   const pointerIdRef  = useRef<number>(0)
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     pointerActive.current = true
-    isDragging.current    = false       // not dragging until we pass threshold
+    isDragging.current    = false
     dragStartX.current    = e.clientX
     dragStartOff.current  = currentOffset.current
     viewportElRef.current = e.currentTarget as HTMLElement
     pointerIdRef.current  = e.pointerId
-    // Do NOT call setPointerCapture here — it would steal the click from <a> tags
   }, [])
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
@@ -58,11 +47,9 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
 
     const dx = e.clientX - dragStartX.current
 
-    // First time past threshold → enter drag mode
     if (!isDragging.current) {
       if (Math.abs(dx) < DRAG_THRESHOLD) return
       isDragging.current = true
-      // NOW capture — we know this is a real drag, not a click
       viewportElRef.current?.setPointerCapture(pointerIdRef.current)
       if (trackRef.current) trackRef.current.style.transition = 'none'
     }
@@ -75,7 +62,6 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
     if (!pointerActive.current) return
     pointerActive.current = false
 
-    // If we never entered drag mode, this was a click — let the <a> handle it
     if (!isDragging.current) return
 
     isDragging.current = false
@@ -107,7 +93,6 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
       style={{
         opacity: 0,
         pointerEvents: 'none',
-        // Sit in the bottom 62% — Contact CTA occupies top 38%
         top: '38%',
         bottom: 0,
         height: 'auto',
@@ -115,7 +100,6 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
       }}
       aria-label="Projects"
     >
-      {/* Heading + controls */}
       <div className="flex items-end justify-between px-8 md:px-16 mb-5">
         <div>
           <p
@@ -138,7 +122,6 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
         </div>
       </div>
 
-      {/* Viewport */}
       <div
         className="relative overflow-hidden px-8 md:px-16"
         role="region"
@@ -149,10 +132,9 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        style={{ cursor: isDragging.current ? 'grabbing' : 'grab', outline: 'none',
-          /* Extra vertical padding so the card hover lift (translateY -3px)
-             and box-shadow aren't clipped by overflow-hidden.
-             Negative margin compensates so the overall layout stays the same. */
+        style={{
+          cursor: isDragging.current ? 'grabbing' : 'grab',
+          outline: 'none',
           paddingTop: '8px',
           paddingBottom: '12px',
           marginTop: '-8px',
@@ -209,7 +191,6 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
                       {project.name}
                     </h3>
                   </div>
-                  {/* Arrow icon */}
                   <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="flex-shrink-0 mt-1" style={{ color: 'var(--accent-color)' }}>
                     <path d="M5 15L15 5M15 5H7M15 5V13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -241,7 +222,6 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
         </div>
       </div>
 
-      {/* Dot indicators */}
       <div className="flex items-center gap-2 px-8 md:px-16 mt-4" role="tablist" aria-label="Project indicator">
         {projects.map((p, i) => (
           <button
@@ -263,7 +243,6 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
         ))}
       </div>
 
-      {/* SR announcer */}
       <div ref={announcerRef} aria-live="polite" aria-atomic="true" className="sr-only" />
     </section>
   )

@@ -1,10 +1,5 @@
 'use client'
 
-/**
- * Layer 10 — large soft low-opacity blob shapes, slowest parallax layer.
- * These define depth without competing with content.
- */
-
 interface Blob {
   id: string
   cx: number

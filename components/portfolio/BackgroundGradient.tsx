@@ -1,9 +1,5 @@
 'use client'
 
-/**
- * Layer 00 — full-canvas pink→white gradient, always opaque.
- * Slowest parallax: only a tiny scale/shift from pointer.
- */
 export default function BackgroundGradient() {
   return (
     <div

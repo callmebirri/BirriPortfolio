@@ -1,12 +1,5 @@
 'use client'
 
-/**
- * Sticky nav — logo mark + navigation links + solid CTA button.
- * Nav links call the scroll helper attached to the cinematic section
- * by useScrollTimeline, so clicks programmatically scroll to the
- * correct scroll offset rather than jumping to a hash anchor.
- */
-
 export default function Header() {
   const handleNav = (target: string, e: React.MouseEvent) => {
     e.preventDefault()
@@ -18,13 +11,6 @@ export default function Header() {
 
   return (
     <header className="nav-layer" role="banner">
-      {/*
-        Three-column CSS grid: logo | nav-links | cta
-        Each outer column is `1fr` so logo and CTA share equal edge space,
-        and the nav-links column is `auto` centered via `place-items: center`.
-        This guarantees the links land on the true horizontal midpoint regardless
-        of the logo/CTA widths — fixes the `justify-between` asymmetry.
-      */}
       <nav
         aria-label="Primary navigation"
         style={{
@@ -34,7 +20,6 @@ export default function Header() {
           padding: '1.25rem clamp(1.25rem, 5vw, 3rem)',
         }}
       >
-        {/* Col 1 — Logo (left-aligned inside its column) */}
         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
           <button
             className="font-serif text-xl font-normal tracking-tight leading-none bg-transparent border-0 p-0 cursor-pointer"
@@ -46,7 +31,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Col 2 — Nav links (centered in the auto column = true page center) */}
         <ul className="hidden md:flex items-center gap-8 list-none m-0 p-0" role="list">
           {[
             { label: 'About',    target: 'about'    },
@@ -66,7 +50,6 @@ export default function Header() {
           ))}
         </ul>
 
-        {/* Col 3 — CTA (right-aligned inside its column) */}
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <a
             href="mailto:contact@qhuyy.tech"

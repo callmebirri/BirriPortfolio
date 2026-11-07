@@ -2,26 +2,15 @@
 
 import { useEffect, useState } from 'react'
 
-/**
- * ScrollToTopButton — fixed bottom-right button that scrolls to the hero.
- *
- * Visibility logic:
- *  - Hidden when the user is at the top (hero visible).
- *  - Fades in after scrolling down past ~15% of the page.
- *  - Calls the same __scrollToSection('hero') helper used by the navbar
- *    so the smooth scroll is consistent.
- */
 export default function ScrollToTopButton() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show the button once the user has scrolled past 300px
       setVisible(window.scrollY > 300)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
-    // Check initial state
     handleScroll()
 
     return () => window.removeEventListener('scroll', handleScroll)
@@ -73,7 +62,6 @@ export default function ScrollToTopButton() {
         btn.style.transform = 'translateY(0) scale(1)'
       }}
     >
-      {/* Chevron-up icon */}
       <svg
         width="20"
         height="20"

@@ -1,10 +1,5 @@
 'use client'
 
-/**
- * Layer 20 — midground: medium blob clusters + faint code motifs.
- * Slightly faster parallax than BlobField.
- */
-
 const motifs = [
   { id: 'm1', x: 8, y: 30, char: '</>', size: 13, opacity: 0.07, rotate: -12 },
   { id: 'm2', x: 88, y: 55, char: '{ }', size: 11, opacity: 0.06, rotate: 8 },
@@ -23,7 +18,6 @@ const midBlobs = [
 export default function MotifLayer() {
   return (
     <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none" data-motif-layer>
-      {/* Mid-tone blobs */}
       {midBlobs.map((b) => (
         <div
           key={b.id}
@@ -41,11 +35,10 @@ export default function MotifLayer() {
         />
       ))}
 
-      {/* Code motifs */}
       {motifs.map((m) => (
         <div
           key={m.id}
-          className="absolute font-mono select-none"
+          className="font-mono select-none absolute"
           style={{
             left: `${m.x}%`,
             top: `${m.y}%`,

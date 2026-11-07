@@ -1,13 +1,10 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-/* Portfolio design tokens — pink/white editorial palette */
 @theme inline {
-  /* Fonts */
   --font-sans: var(--font-dm-sans), 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-dm-serif), 'DM Serif Display', Georgia, serif;
 
-  /* Colors mapped to CSS vars */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-ink: var(--ink);
@@ -29,32 +26,26 @@
 :root {
   color-scheme: light;
 
-  /* Core palette */
   --paper:           #FFFFFF;
   --paper-warm:      #FFF7F9;
   --background:      #FFF2F6;
   --surface:         #FFFFFF;
 
-  /* Ink */
   --foreground:      #2A1620;
   --ink:             #2A1620;
   --ink-secondary:   #7A5B66;
 
-  /* Accent */
   --accent-color:    #E85D8A;
   --accent-hover:    #CC3F6E;
 
-  /* Borders & chips */
   --border-soft:     rgba(232, 93, 138, 0.18);
   --chip:            #FFEDF3;
 
-  /* Keep shadcn-compatible vars for UI primitives */
   --border:          #F0D8E2;
   --input:           #F0D8E2;
   --ring:            #E85D8A;
   --radius:          0.75rem;
 
-  /* z-index bands (used via CSS vars in components) */
   --z-world:         0;
   --z-tint:          10;
   --z-copy:          20;
@@ -62,7 +53,6 @@
   --z-overlay:       40;
 }
 
-/* Force light mode always — this portfolio is light-only */
 .dark {
   color-scheme: light;
   --paper:           #FFFFFF;
@@ -109,7 +99,6 @@
   html {
     background-color: var(--background);
     color: var(--ink);
-    /* Do NOT set scroll-behavior: smooth here on desktop — Lenis owns all scroll smoothing. */
   }
 
   body {
@@ -121,13 +110,11 @@
     overflow-x: hidden;
   }
 
-  /* Selection */
   ::selection {
     background: rgba(232, 93, 138, 0.2);
     color: var(--ink);
   }
 
-  /* Focus ring */
   :focus-visible {
     outline: 2px solid var(--accent-color);
     outline-offset: 3px;
@@ -135,15 +122,12 @@
   }
 }
 
-/* Cinematic scroll stage */
 .cinematic-section {
   position: relative;
-  /* JS overwrites height; CSS fallback keeps hero visible before effect runs */
   min-height: 100svh;
 }
 
 .cinematic-stage {
-  /* Pure CSS sticky — no GSAP pin, avoids the pin-spacer translate offset */
   position: sticky;
   top: 0;
   width: 100%;
@@ -152,14 +136,12 @@
   will-change: transform;
 }
 
-/* World layer — background, blobs, motifs */
 .world-layer {
   position: absolute;
   inset: 0;
   z-index: var(--z-world);
 }
 
-/* Tint overlay layer */
 .tint-layer {
   position: absolute;
   inset: 0;
@@ -167,7 +149,6 @@
   pointer-events: none;
 }
 
-/* Copy layer — narrative panels */
 .copy-layer {
   position: absolute;
   inset: 0;
@@ -185,7 +166,6 @@
   pointer-events: auto;
 }
 
-/* Nav layer */
 .nav-layer {
   position: absolute;
   top: 0;
@@ -194,13 +174,11 @@
   z-index: var(--z-nav);
 }
 
-/* Smooth blob shapes */
 .blob {
   border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
   will-change: transform;
 }
 
-/* Narrative panels */
 .narrative-panel {
   position: absolute;
   opacity: 0;
@@ -212,7 +190,6 @@
   pointer-events: auto;
 }
 
-/* Chip / badge */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -227,7 +204,6 @@
   white-space: nowrap;
 }
 
-/* Solid accent button */
 .btn-accent {
   display: inline-flex;
   align-items: center;
@@ -255,7 +231,6 @@
   transform: translateY(0);
 }
 
-/* Ghost button */
 .btn-ghost {
   display: inline-flex;
   align-items: center;
@@ -280,7 +255,6 @@
   transform: translateY(-1px);
 }
 
-/* Card */
 .project-card {
   background: var(--surface);
   border: 1.5px solid var(--border-soft);
@@ -302,7 +276,6 @@
   transform: translateY(-3px);
 }
 
-/* ── Mobile layout (< 768px): natural vertical flow, 120Hz native touch scroll ── */
 @media (max-width: 768px) {
   html {
     scroll-behavior: smooth;
@@ -339,7 +312,6 @@
     pointer-events: auto !important;
   }
 
-  /* Fixed ambient background behind scrolling content */
   .world-layer {
     position: fixed !important;
     inset: 0 !important;
@@ -347,7 +319,6 @@
     z-index: 0 !important;
   }
 
-  /* Hide scattered floating chips on mobile to prevent cluttering text */
   [data-stack-scene] {
     display: none !important;
   }
@@ -356,7 +327,6 @@
     display: none !important;
   }
 
-  /* Sticky top navigation with soft backdrop blur */
   .nav-layer {
     position: sticky !important;
     top: 0;
@@ -367,7 +337,6 @@
   }
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .cinematic-section {
     height: auto !important;

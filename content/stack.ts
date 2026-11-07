@@ -4,7 +4,6 @@ export interface TechChip {
 }
 
 export const techStack: TechChip[] = [
-  // Languages
   { label: 'Java', category: 'language' },
   { label: 'Kotlin', category: 'language' },
   { label: 'C++', category: 'language' },
@@ -12,11 +11,9 @@ export const techStack: TechChip[] = [
   { label: 'JavaScript', category: 'language' },
   { label: 'SQL', category: 'language' },
   { label: 'Python', category: 'language' },
-  // Frameworks
   { label: 'React', category: 'framework' },
   { label: 'Spring Boot', category: 'framework' },
   { label: 'Flutter', category: 'framework' },
-  // Tools
   { label: 'Git', category: 'tool' },
   { label: 'JetBrains', category: 'tool' },
   { label: 'Docker', category: 'tool' },

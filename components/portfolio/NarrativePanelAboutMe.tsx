@@ -3,10 +3,6 @@
 import { forwardRef } from 'react'
 import { quickFacts } from '@/content/stack'
 
-/**
- * Narrative panel A — About Me.
- * Starts hidden; enters at scroll p ≈ 0.25.
- */
 const NarrativePanelAboutMe = forwardRef<HTMLElement>((_, ref) => {
   return (
     <section
@@ -16,7 +12,6 @@ const NarrativePanelAboutMe = forwardRef<HTMLElement>((_, ref) => {
       aria-label="About Me"
     >
       <div style={{ maxWidth: '660px', width: '100%' }}>
-        {/* Label */}
         <p
           className="text-xs font-semibold tracking-widest uppercase mb-3"
           style={{ color: 'var(--accent-color)', letterSpacing: '0.2em' }}
@@ -24,7 +19,6 @@ const NarrativePanelAboutMe = forwardRef<HTMLElement>((_, ref) => {
           About Me
         </p>
 
-        {/* Heading */}
         <h2
           className="font-serif text-balance mb-6"
           style={{
@@ -39,7 +33,6 @@ const NarrativePanelAboutMe = forwardRef<HTMLElement>((_, ref) => {
           <em style={{ color: 'var(--accent-color)' }}>still having fun.</em>
         </h2>
 
-        {/* Body */}
         <p
           className="leading-relaxed mb-8"
           style={{
@@ -57,7 +50,6 @@ const NarrativePanelAboutMe = forwardRef<HTMLElement>((_, ref) => {
           Still learning, still breaking stuff, still shipping.
         </p>
 
-        {/* Quick facts */}
         <dl className="flex flex-wrap gap-x-8 gap-y-4" aria-label="Quick facts">
           {quickFacts.map((f) => (
             <div key={f.label} className="flex flex-col gap-0.5">
