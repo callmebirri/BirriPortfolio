@@ -6,7 +6,8 @@ const steps = [
   { label: 'Intro', progress: 0 },
   { label: 'About', progress: 0.25 },
   { label: 'Passions', progress: 0.48 },
-  { label: 'Say hello', progress: 0.75 },
+  { label: 'Projects', progress: 0.69 },
+  { label: 'Say hello', progress: 0.82 },
 ]
 
 export default function JourneyTimeline() {

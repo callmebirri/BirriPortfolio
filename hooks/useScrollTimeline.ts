@@ -8,6 +8,7 @@ export interface ScrollTimelineRefs {
   heroRef:       React.RefObject<HTMLElement | null>
   aboutRef:      React.RefObject<HTMLElement | null>
   passionsRef:   React.RefObject<HTMLElement | null>
+  projectsRef:   React.RefObject<HTMLElement | null>
   stackSceneRef: React.RefObject<HTMLDivElement | null>
   contactRef:    React.RefObject<HTMLElement | null>
   tintRef:       React.RefObject<HTMLDivElement | null>
@@ -34,7 +35,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       const {
         sectionRef, heroRef, aboutRef,
-        passionsRef, stackSceneRef,
+        passionsRef, projectsRef, stackSceneRef,
         contactRef, tintRef, blobFieldRef, motifLayerRef,
       } = refs
 
@@ -42,6 +43,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       const hero       = heroRef.current
       const about      = aboutRef.current
       const passions   = passionsRef.current
+      const projects   = projectsRef.current
       const stackScene = stackSceneRef.current
       const contact    = contactRef.current
       const tint       = tintRef.current
@@ -52,7 +54,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       const isMobile  = window.matchMedia('(max-width: 768px)').matches
 
       if (isReduced || isMobile) {
-        ;[hero, about, passions, contact].forEach((el) => {
+        ;[hero, about, passions, projects, contact].forEach((el) => {
           if (!el) return
           el.style.opacity = '1'
           el.style.visibility = 'visible'
@@ -115,6 +117,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         autoAlpha: 0, y: 0, pointerEvents: 'none',
       })
       if (stackScene) gsap.set(stackScene, { autoAlpha: 0 })
+      if (projects) gsap.set(projects, { autoAlpha: 0, y: 0, pointerEvents: 'none' })
       if (tint)       gsap.set(tint, { opacity: 0 })
 
       const tl = gsap.timeline({ paused: true })
@@ -173,6 +176,15 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         }, 69)
       }
 
+      if (projects) {
+        tl.fromTo(projects,
+          { autoAlpha: 0, y: 28 },
+          { autoAlpha: 1, y: 0, ease: 'power2.out', duration: 6, onStart() { projects.style.pointerEvents = 'auto' }, onReverseComplete() { projects.style.pointerEvents = 'none' } },
+          69,
+        )
+        tl.to(projects, { autoAlpha: 0, y: -22, ease: 'power2.in', duration: 5, onStart() { projects.style.pointerEvents = 'none' }, onReverseComplete() { projects.style.pointerEvents = 'auto' } }, 75)
+      }
+
       if (contact) {
         tl.fromTo(contact,
           { autoAlpha: 0, y: -20 },
@@ -194,6 +206,32 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         scrub      : true,
         animation  : tl,
       })
+
+      const projectsMM = gsap.matchMedia()
+      if (projects) {
+        projectsMM.add({ desktop: '(min-width: 769px)', mobile: '(max-width: 768px)', reduced: '(prefers-reduced-motion: reduce)' }, (context) => {
+          const { desktop, reduced } = context.conditions as { desktop: boolean; reduced: boolean }
+          if (!desktop || reduced) return () => undefined
+          const track = projects.querySelector<HTMLElement>('.projects-track')
+          if (!track) return () => undefined
+          const distance = () => Math.max(0, track.scrollWidth - projects.clientWidth + 32)
+          const railTrigger = ScrollTrigger.create({
+            trigger: projects,
+            start: 'top top',
+            end: () => `+=${distance()}`,
+            pin: true,
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+            animation: gsap.to(track, { x: () => -distance(), ease: 'none', paused: true }),
+            onToggle: (self) => { projects.dataset.pinned = String(self.isActive) },
+          })
+          return () => railTrigger.kill()
+        })
+      }
+
+      const refreshAfterAssets = () => ScrollTrigger.refresh()
+      if (document.fonts?.ready) document.fonts.ready.then(refreshAfterAssets)
+      window.addEventListener('load', refreshAfterAssets, { once: true })
 
       const navPanelMap: Record<string, { progress: number }> = {
         hero    : { progress: 0    },
@@ -241,6 +279,8 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       }
 
       cleanupFns.push(() => {
+        window.removeEventListener('load', refreshAfterAssets)
+        projectsMM.revert()
         st.kill()
         tl.kill()
         ScrollTrigger.getAll().forEach((t) => t.kill())

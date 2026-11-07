@@ -13,6 +13,7 @@ import NarrativePanelAboutMe from './NarrativePanelAboutMe'
 import NarrativePanelPassions from './NarrativePanelPassions'
 import ContactCTA from './ContactCTA'
 import JourneyTimeline from './JourneyTimeline'
+import ProjectsRail from './ProjectsRail'
 
 export default function CinematicPortfolio() {
   const sectionRef    = useRef<HTMLElement>(null)
@@ -20,6 +21,7 @@ export default function CinematicPortfolio() {
   const heroRef       = useRef<HTMLElement>(null)
   const aboutRef      = useRef<HTMLElement>(null)
   const passionsRef   = useRef<HTMLElement>(null)
+  const projectsRef   = useRef<HTMLElement>(null)
   const contactRef    = useRef<HTMLElement>(null)
   const blobFieldRef  = useRef<HTMLDivElement>(null)
   const motifLayerRef = useRef<HTMLDivElement>(null)
@@ -32,6 +34,7 @@ export default function CinematicPortfolio() {
     heroRef,
     aboutRef,
     passionsRef,
+    projectsRef,
     stackSceneRef,
     contactRef,
     tintRef,
@@ -74,6 +77,7 @@ export default function CinematicPortfolio() {
         <HeroIntro ref={heroRef} />
         <NarrativePanelAboutMe ref={aboutRef} />
         <NarrativePanelPassions ref={passionsRef} />
+        <ProjectsRail ref={projectsRef} />
         <ContactCTA ref={contactRef} />
       </div>
     </main>
