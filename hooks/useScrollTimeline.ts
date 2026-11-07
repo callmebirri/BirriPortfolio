@@ -8,6 +8,7 @@ export interface ScrollTimelineRefs {
   heroRef:       React.RefObject<HTMLElement | null>
   aboutRef:      React.RefObject<HTMLElement | null>
   passionsRef:   React.RefObject<HTMLElement | null>
+  projectsRef:   React.RefObject<HTMLElement | null>
   stackSceneRef: React.RefObject<HTMLDivElement | null>
   contactRef:    React.RefObject<HTMLElement | null>
   tintRef:       React.RefObject<HTMLDivElement | null>
@@ -33,26 +34,28 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       gsap.registerPlugin(ScrollTrigger)
 
       const {
-        sectionRef, heroRef, aboutRef,
-        passionsRef, stackSceneRef,
+        sectionRef, stageRef, heroRef, aboutRef,
+        passionsRef, projectsRef, stackSceneRef,
         contactRef, tintRef, blobFieldRef, motifLayerRef,
       } = refs
 
       const section    = sectionRef.current
+      const stage      = stageRef.current
       const hero       = heroRef.current
       const about      = aboutRef.current
       const passions   = passionsRef.current
+      const projects   = projectsRef.current
       const stackScene = stackSceneRef.current
       const contact    = contactRef.current
       const tint       = tintRef.current
 
-      if (!section || !hero) return
+      if (!section || !stage || !hero) return
 
       const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       const isMobile  = window.matchMedia('(max-width: 768px)').matches
 
       if (isReduced || isMobile) {
-        ;[hero, about, passions, contact].forEach((el) => {
+        ;[hero, about, passions, projects, contact].forEach((el) => {
           if (!el) return
           el.style.opacity = '1'
           el.style.visibility = 'visible'
@@ -107,11 +110,11 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         lenis.destroy()
       })
 
-      const SCROLL_LENGTH = Math.max(window.innerHeight * 5, 3800)
+      const SCROLL_LENGTH = Math.max(window.innerHeight * 4.5, 3600)
       section.style.height = `${SCROLL_LENGTH + window.innerHeight}px`
 
       gsap.set(hero, { autoAlpha: 1, y: 0, pointerEvents: 'auto' })
-      gsap.set([about, passions, contact].filter(Boolean), {
+      gsap.set([about, passions, projects, contact].filter(Boolean), {
         autoAlpha: 0, y: 0, pointerEvents: 'none',
       })
       if (stackScene) gsap.set(stackScene, { autoAlpha: 0 })
@@ -120,86 +123,119 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       const tl = gsap.timeline({ paused: true })
 
       tl.to(hero, {
-        autoAlpha: 0, y: -44,
+        autoAlpha: 0, y: -44, pointerEvents: 'none', zIndex: 20,
         ease: 'power2.in',
-        duration: 15,
-        onStart()           { hero.style.pointerEvents = 'none' },
-        onReverseComplete() { hero.style.pointerEvents = 'auto' },
+        duration: 14,
       }, 3)
 
       if (tint) {
         tl.to(tint, { opacity: 0.82, ease: 'power2.out', duration: 8 }, 17)
-        tl.to(tint, { opacity: 0,    ease: 'power2.in',  duration: 6 }, 38)
-        tl.to(tint, { opacity: 0.82, ease: 'power2.out', duration: 5 }, 47)
-        tl.to(tint, { opacity: 0,    ease: 'power2.in',  duration: 7 }, 66)
+        tl.to(tint, { opacity: 0,    ease: 'power2.in',  duration: 6 }, 37)
+        tl.to(tint, { opacity: 0.82, ease: 'power2.out', duration: 6 }, 46)
+        tl.to(tint, { opacity: 0,    ease: 'power2.in',  duration: 6 }, 81)
       }
 
       if (about) {
         tl.fromTo(about,
-          { autoAlpha: 0, y: 32 },
+          { autoAlpha: 0, y: 32, pointerEvents: 'none', zIndex: 20 },
           {
-            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 8,
-            onStart()           { about.style.pointerEvents = 'auto' },
-            onReverseComplete() { about.style.pointerEvents = 'none' },
+            autoAlpha: 1, y: 0, pointerEvents: 'auto', zIndex: 25, ease: 'power2.out', duration: 8,
+            onStart()           { about.setAttribute('aria-hidden', 'false') },
+            onReverseComplete() { about.setAttribute('aria-hidden', 'true') },
           },
-          25,
+          22,
         )
         tl.to(about, {
-          autoAlpha: 0, y: -22, ease: 'power2.in', duration: 8,
-          onStart()           { about.style.pointerEvents = 'none' },
-          onReverseComplete() { about.style.pointerEvents = 'auto' },
-        }, 35)
+          autoAlpha: 0, y: -22, pointerEvents: 'none', zIndex: 20, ease: 'power2.in', duration: 8,
+          onStart()           { about.setAttribute('aria-hidden', 'true') },
+          onReverseComplete() { about.setAttribute('aria-hidden', 'false') },
+        }, 34)
       }
 
       if (stackScene) {
         tl.to(stackScene, { autoAlpha: 1, ease: 'power2.out', duration: 4 }, 44)
-        tl.to(stackScene, { autoAlpha: 0, ease: 'power2.in',  duration: 6 }, 67)
+        tl.to(stackScene, { autoAlpha: 0, ease: 'power2.in',  duration: 6 }, 59)
       }
 
       if (passions) {
         tl.fromTo(passions,
-          { autoAlpha: 0, y: 28 },
+          { autoAlpha: 0, y: 20, pointerEvents: 'none', zIndex: 20 },
           {
-            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 8,
-            onStart()           { passions.style.pointerEvents = 'auto' },
-            onReverseComplete() { passions.style.pointerEvents = 'none' },
+            autoAlpha: 1, y: 0, pointerEvents: 'auto', zIndex: 25, ease: 'power2.out', duration: 8,
+            onStart() { passions.setAttribute('aria-hidden', 'false') },
+            onReverseComplete() { passions.setAttribute('aria-hidden', 'true') },
           },
-          48,
+          44,
         )
         tl.to(passions, {
-          autoAlpha: 0, y: -22, ease: 'power2.in', duration: 6,
-          onStart()           { passions.style.pointerEvents = 'none' },
-          onReverseComplete() { passions.style.pointerEvents = 'auto' },
-        }, 69)
+          autoAlpha: 0, y: -20, pointerEvents: 'none', zIndex: 20, ease: 'power2.in', duration: 6,
+          onStart() { passions.setAttribute('aria-hidden', 'true') },
+          onReverseComplete() { passions.setAttribute('aria-hidden', 'false') },
+        }, 59)
+      }
+
+      if (projects) {
+        tl.fromTo(projects,
+          { autoAlpha: 0, y: 20, pointerEvents: 'none', zIndex: 20 },
+          {
+            autoAlpha: 1, y: 0, pointerEvents: 'auto', zIndex: 25, ease: 'power2.out', duration: 7,
+            onStart() { projects.setAttribute('aria-hidden', 'false') },
+            onReverseComplete() { projects.setAttribute('aria-hidden', 'true') },
+          },
+          66,
+        )
+        tl.to(projects, {
+          autoAlpha: 0, y: -20, pointerEvents: 'none', zIndex: 20, ease: 'power2.in', duration: 6,
+          onStart() { projects.setAttribute('aria-hidden', 'true') },
+          onReverseComplete() { projects.setAttribute('aria-hidden', 'false') },
+        }, 81)
       }
 
       if (contact) {
         tl.fromTo(contact,
-          { autoAlpha: 0, y: -20 },
+          { autoAlpha: 0, y: 20, pointerEvents: 'none', zIndex: 20 },
           {
-            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 13,
-            onStart()           { contact.style.pointerEvents = 'auto' },
-            onReverseComplete() { contact.style.pointerEvents = 'none' },
+            autoAlpha: 1, y: 0, pointerEvents: 'auto', zIndex: 25, ease: 'power2.out', duration: 7,
+            onStart()           { contact.setAttribute('aria-hidden', 'false') },
+            onReverseComplete() { contact.setAttribute('aria-hidden', 'true') },
           },
-          75,
+          88,
         )
       }
 
       tl.set({}, {}, 100)
 
       const st = ScrollTrigger.create({
-        trigger    : section,
-        start      : 'top top',
-        end        : `+=${SCROLL_LENGTH}`,
-        scrub      : true,
-        animation  : tl,
+        trigger: section,
+        start: 'top top',
+        end: `+=${SCROLL_LENGTH}`,
+        scrub: 0.8,
+        animation: tl,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          window.dispatchEvent(new CustomEvent('portfolio:progress', { detail: { progress: self.progress } }))
+        },
       })
+
+      window.dispatchEvent(new CustomEvent('portfolio:progress', { detail: { progress: 0 } }))
+
+      const onRefresh = () => lenis.resize()
+      ScrollTrigger.addEventListener('refresh', onRefresh)
+      cleanupFns.push(() => {
+        ScrollTrigger.removeEventListener('refresh', onRefresh)
+        section.style.height = ''
+      })
+
+      const refreshAfterAssets = () => ScrollTrigger.refresh()
+      if (document.fonts?.ready) document.fonts.ready.then(refreshAfterAssets)
+      window.addEventListener('load', refreshAfterAssets, { once: true })
 
       const navPanelMap: Record<string, { progress: number }> = {
         hero    : { progress: 0    },
-        about   : { progress: 0.33 },
-        stack   : { progress: 0.60 },
-        contact : { progress: 0.88 },
+        about   : { progress: 0.28 },
+        stack   : { progress: 0.55 },
+        projects: { progress: 0.77 },
+        contact : { progress: 0.96 },
       }
 
       const scrollToSection = (id: string) => {
@@ -241,6 +277,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       }
 
       cleanupFns.push(() => {
+        window.removeEventListener('load', refreshAfterAssets)
         st.kill()
         tl.kill()
         ScrollTrigger.getAll().forEach((t) => t.kill())

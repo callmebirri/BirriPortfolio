@@ -4,30 +4,40 @@ import { useEffect, useState } from 'react'
 
 const steps = [
   { label: 'Intro', progress: 0 },
-  { label: 'About', progress: 0.25 },
-  { label: 'Passions', progress: 0.48 },
-  { label: 'Say hello', progress: 0.75 },
+  { label: 'About', progress: 0.22 },
+  { label: 'Passions', progress: 0.44 },
+  { label: 'Projects', progress: 0.66 },
+  { label: 'Say hello', progress: 0.88 },
 ]
 
 export default function JourneyTimeline() {
   const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
-    const update = () => {
-      const section = document.querySelector('.cinematic-section')
-      if (!section) return
-      const maxScroll = Math.max(section.scrollHeight - window.innerHeight, 1)
-      const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll))
+    const update = (progress: number) => {
       let nextIndex = 0
       steps.forEach((step, index) => {
         if (progress >= step.progress) nextIndex = index
       })
       setActiveIndex(nextIndex)
     }
+    const onTimelineProgress = (event: Event) => {
+      update((event as CustomEvent<{ progress: number }>).detail.progress)
+    }
+    const onScrollFallback = () => {
+      const section = document.querySelector('.cinematic-section')
+      if (!section) return
+      const maxScroll = Math.max(section.scrollHeight - window.innerHeight, 1)
+      update(Math.min(1, Math.max(0, window.scrollY / maxScroll)))
+    }
 
-    update()
-    window.addEventListener('scroll', update, { passive: true })
-    return () => window.removeEventListener('scroll', update)
+    onScrollFallback()
+    window.addEventListener('portfolio:progress', onTimelineProgress)
+    window.addEventListener('scroll', onScrollFallback, { passive: true })
+    return () => {
+      window.removeEventListener('portfolio:progress', onTimelineProgress)
+      window.removeEventListener('scroll', onScrollFallback)
+    }
   }, [])
 
   return (

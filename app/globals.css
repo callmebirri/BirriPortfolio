@@ -161,9 +161,27 @@
   visibility: hidden;
 }
 
-.copy-layer[style*="pointer-events: auto"] > *,
-.copy-layer.active > * {
+.copy-layer[style*="pointer-events: auto"],
+.copy-layer[style*="pointer-events: auto"] * {
   pointer-events: auto;
+}
+
+.copy-layer[style*="visibility: visible"] {
+  z-index: 25;
+  pointer-events: auto;
+}
+
+.copy-layer[style*="visibility: visible"] * {
+  pointer-events: auto;
+}
+
+.copy-layer[style*="visibility: hidden"] {
+  z-index: var(--z-copy);
+  pointer-events: none !important;
+}
+
+.copy-layer[style*="visibility: hidden"] * {
+  pointer-events: none !important;
 }
 
 .nav-layer {
@@ -255,16 +273,50 @@
   transform: translateY(-1px);
 }
 
+.projects-rail {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: clamp(80px, 8vw, 140px);
+  padding-right: clamp(1.5rem, 4vw, 4rem);
+  will-change: transform, opacity;
+}
+
+.projects-group {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-direction: column;
+  gap: clamp(1.75rem, 2.5vh, 2.75rem);
+  margin: 0 auto;
+}
+
+.projects-rail .projects-viewport {
+  width: 100%;
+}
+
+.projects-rail .projects-track {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: clamp(0.875rem, 1.4vw, 1.5rem);
+}
+
+.projects-rail .project-card {
+  width: clamp(215px, 19vw, 295px);
+  min-height: clamp(330px, 38vh, 390px);
+  padding: clamp(1.75rem, 2.2vw, 2.25rem);
+}
+
 .project-card {
   background: var(--surface);
   border: 1.5px solid var(--border-soft);
   border-radius: 20px;
-  padding: 2rem;
   text-decoration: none;
   color: inherit;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   will-change: transform;
   flex-shrink: 0;
@@ -327,6 +379,28 @@
     display: none !important;
   }
 
+  .projects-rail {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 6rem 1.25rem;
+  }
+
+  .projects-group {
+    width: 100%;
+    gap: 2.5rem;
+  }
+
+  .projects-rail .projects-track {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .projects-rail .project-card {
+    width: 100%;
+    min-height: 0;
+    border-radius: 20px;
+  }
+
   .nav-layer {
     position: sticky !important;
     top: 0;
@@ -344,6 +418,21 @@
   .cinematic-stage {
     position: relative;
     height: auto !important;
+  }
+  .projects-rail {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 6rem 1.25rem;
+  }
+  .projects-group {
+    width: 100%;
+  }
+  .projects-rail .projects-track {
+    flex-direction: column;
+  }
+  .projects-rail .project-card {
+    width: 100%;
+    border-radius: 20px;
   }
   .narrative-panel {
     position: relative;

@@ -1,49 +1,38 @@
 export interface Project {
   id: string
-  name: string
+  title: string
   description: string
-  stack: string[]
-  url: string
-  featured: boolean
-  org?: string
+  tags: string[]
+  repoUrl: string
 }
 
 export const projects: Project[] = [
   {
-    id: 'birrimonitor',
-    name: 'BirriMonitor',
-    description:
-      'A Windows network traffic monitoring toolkit that intercepts HTTP/HTTPS requests using API hooking techniques.',
-    stack: ['C++', 'MinHook', 'MSVC v145'],
-    url: 'https://github.com/callmebirri/BirriMonitor',
-    featured: true,
+    id: 'project-1',
+    title: 'locket-gold-lsposed',
+    description: 'An Xposed / LSPosed module targeting the Locket application (com.locket.Locket), designed for client-side runtime analysis and instrumentation.',
+    tags: ['Kotlin', 'LSPosed'],
+    repoUrl: 'https://github.com/callmebirri/locket-gold-lsposed',
   },
   {
-    id: 'eralock',
-    name: 'EraLock',
-    description:
-      'Lock or unlock Nether and End dimensions on a Paper Minecraft server. Actually validates the full portal structure instead of just cancelling ignition.',
-    stack: ['Kotlin', 'Gradle DSL', 'NMS'],
-    url: 'https://github.com/callmebirri/EraLock',
-    featured: true,
+    id: 'project-2',
+    title: 'DFRoot-headless',
+    description: 'DFRoot Headless is an automated, headless fork of DFRoot leveraging the DirtyFrag vulnerability (CVE-2026-43284).',
+    tags: ['C', 'Java'],
+    repoUrl: 'https://github.com/callmebirri/DFRoot-headless',
   },
   {
-    id: 'hqngtools',
-    name: 'HqngTools',
-    description:
-      'Custom tools for Paper/Folia that add area-of-effect block breaking, similar to DonutSMP\'s Amethyst tool.',
-    stack: ['Kotlin', 'Gradle DSL'],
-    url: 'https://github.com/HqngDev/HqngTools',
-    featured: true,
-    org: 'HqngDev',
+    id: 'project-3',
+    title: 'BirriPortfolio',
+    description: 'ehm this site ( yk )',
+    tags: ['React', 'NextJS', "TypeScript"],
+    repoUrl: 'https://github.com/callmebirri/BirriPortfolio',
   },
   {
-    id: 'insureinv',
-    name: 'InsureInv',
-    description:
-      'A flexible, charge-based inventory protection plugin for modern Minecraft servers.',
-    stack: ['Kotlin', 'Gradle DSL'],
-    url: 'https://github.com/callmebirri/InsureInv',
-    featured: false,
-  },
-]
+    id: 'project-4',
+    title: 'InsureInv',
+    description: 'Bukkit plugin that makes death less punishing, while keeping risk and balance.',
+    tags: ['Kotlin', 'Bukkit', 'Spigot'],
+    repoUrl: 'https://github.com/callmebirri/InsureInv',
+  }
+];
