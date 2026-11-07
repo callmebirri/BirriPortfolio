@@ -1,27 +1,21 @@
 'use client'
 
-import { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, useRef } from 'react'
 import { projects } from '@/content/projects'
 
 const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
   const announcerRef = useRef<HTMLDivElement>(null)
-  const [activeIndex, setActiveIndex] = useState(0)
-
-  useEffect(() => {
-    if (announcerRef.current) {
-      announcerRef.current.textContent = `Project ${activeIndex + 1} of ${projects.length}: ${projects[activeIndex].title}`
-    }
-  }, [activeIndex])
 
   return (
     <section
       ref={ref}
       id="projects"
-      className="copy-layer projects-rail flex flex-col justify-end"
+      className="copy-layer projects-rail"
       aria-label="Projects"
-      style={{ opacity: 0, pointerEvents: 'none', top: '38%', bottom: 0, height: 'auto', paddingBottom: '2.5rem', zIndex: 25, background: 'var(--surface)' }}
+      aria-hidden="true"
+      style={{ opacity: 0, pointerEvents: 'none', zIndex: 25, background: 'var(--surface)' }}
     >
-      <div className="mb-5 flex items-end justify-between px-8 md:px-16">
+      <div className="projects-group">
         <div>
           <p className="mb-1.5 text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--accent-color)', letterSpacing: '0.2em' }}>
             Projects
@@ -30,10 +24,9 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
             Things I&apos;ve built.
           </h2>
         </div>
-      </div>
 
-      <div className="projects-viewport overflow-hidden px-8 md:px-16" role="region" aria-label="Projects gallery">
-        <div className="projects-track flex gap-5" style={{ willChange: 'transform' }}>
+      <div className="projects-viewport" role="region" aria-label="Projects gallery">
+        <div className="projects-track" style={{ willChange: 'auto' }}>
           {projects.map((project, index) => (
             <article key={project.id} className="project-card project-placard">
               <div className="flex items-start justify-between gap-4">
@@ -56,11 +49,9 @@ const ProjectsRail = forwardRef<HTMLElement>((_, ref) => {
           ))}
         </div>
       </div>
-
-      <div className="mt-4 flex items-center gap-2 px-8 md:px-16" aria-hidden="true">
-        {projects.map((project, index) => <span key={project.id} className="h-2 rounded-full" style={{ width: index === activeIndex ? '22px' : '8px', background: index === activeIndex ? 'var(--accent-color)' : 'var(--border-soft)' }} />)}
       </div>
-      <div ref={announcerRef} aria-live="polite" aria-atomic="true" className="sr-only" />
+
+      <div ref={announcerRef} aria-live="polite" aria-atomic="true" className="sr-only">Projects gallery</div>
     </section>
   )
 })

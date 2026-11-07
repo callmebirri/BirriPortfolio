@@ -34,12 +34,13 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       gsap.registerPlugin(ScrollTrigger)
 
       const {
-        sectionRef, heroRef, aboutRef,
+        sectionRef, stageRef, heroRef, aboutRef,
         passionsRef, projectsRef, stackSceneRef,
         contactRef, tintRef, blobFieldRef, motifLayerRef,
       } = refs
 
       const section    = sectionRef.current
+      const stage      = stageRef.current
       const hero       = heroRef.current
       const about      = aboutRef.current
       const passions   = passionsRef.current
@@ -48,7 +49,7 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       const contact    = contactRef.current
       const tint       = tintRef.current
 
-      if (!section || !hero) return
+      if (!section || !stage || !hero) return
 
       const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       const isMobile  = window.matchMedia('(max-width: 768px)').matches
@@ -109,8 +110,8 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
         lenis.destroy()
       })
 
-      const SCROLL_LENGTH = Math.max(window.innerHeight * 5, 3800)
-      section.style.height = `${SCROLL_LENGTH + window.innerHeight}px`
+      const SCROLL_LENGTH = window.innerHeight * 2.5
+      section.style.height = `${window.innerHeight}px`
 
       gsap.set(hero, { autoAlpha: 1, y: 0, pointerEvents: 'auto' })
       gsap.set([about, passions, contact].filter(Boolean), {
@@ -161,28 +162,31 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       if (passions) {
         tl.fromTo(passions,
-          { autoAlpha: 0, y: 28 },
+          { autoAlpha: 0, y: 24 },
           {
-            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 8,
-            onStart()           { passions.style.pointerEvents = 'auto' },
-            onReverseComplete() { passions.style.pointerEvents = 'none' },
+            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 12,
+            onStart() { passions.style.pointerEvents = 'auto'; passions.setAttribute('aria-hidden', 'false') },
+            onReverseComplete() { passions.style.pointerEvents = 'none'; passions.setAttribute('aria-hidden', 'true') },
           },
-          48,
+          44,
         )
         tl.to(passions, {
-          autoAlpha: 0, y: -22, ease: 'power2.in', duration: 6,
-          onStart()           { passions.style.pointerEvents = 'none' },
-          onReverseComplete() { passions.style.pointerEvents = 'auto' },
-        }, 69)
+          autoAlpha: 0, y: -24, ease: 'power2.in', duration: 14,
+          onStart() { passions.style.pointerEvents = 'none'; passions.setAttribute('aria-hidden', 'true') },
+          onReverseComplete() { passions.style.pointerEvents = 'auto'; passions.setAttribute('aria-hidden', 'false') },
+        }, 62)
       }
 
       if (projects) {
         tl.fromTo(projects,
-          { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, ease: 'power2.out', duration: 6, onStart() { projects.style.pointerEvents = 'auto' }, onReverseComplete() { projects.style.pointerEvents = 'none' } },
-          69,
+          { autoAlpha: 0, y: 24 },
+          {
+            autoAlpha: 1, y: 0, ease: 'power2.out', duration: 14,
+            onStart() { projects.style.pointerEvents = 'auto'; projects.setAttribute('aria-hidden', 'false') },
+            onReverseComplete() { projects.style.pointerEvents = 'none'; projects.setAttribute('aria-hidden', 'true') },
+          },
+          62,
         )
-        tl.to(projects, { autoAlpha: 0, y: -22, ease: 'power2.in', duration: 5, onStart() { projects.style.pointerEvents = 'none' }, onReverseComplete() { projects.style.pointerEvents = 'auto' } }, 75)
       }
 
       if (contact) {
@@ -200,34 +204,20 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
       tl.set({}, {}, 100)
 
       const st = ScrollTrigger.create({
-        trigger    : section,
-        start      : 'top top',
-        end        : `+=${SCROLL_LENGTH}`,
-        scrub      : true,
-        animation  : tl,
+        trigger: stage,
+        start: 'top top',
+        end: `+=${SCROLL_LENGTH}`,
+        pin: true,
+        pinSpacing: true,
+        scrub: 0.8,
+        animation: tl,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          window.dispatchEvent(new CustomEvent('portfolio:progress', { detail: { progress: self.progress } }))
+        },
       })
 
-      const projectsMM = gsap.matchMedia()
-      if (projects) {
-        projectsMM.add({ desktop: '(min-width: 769px)', mobile: '(max-width: 768px)', reduced: '(prefers-reduced-motion: reduce)' }, (context) => {
-          const { desktop, reduced } = context.conditions as { desktop: boolean; reduced: boolean }
-          if (!desktop || reduced) return () => undefined
-          const track = projects.querySelector<HTMLElement>('.projects-track')
-          if (!track) return () => undefined
-          const distance = () => Math.max(0, track.scrollWidth - projects.clientWidth + 32)
-          const railTrigger = ScrollTrigger.create({
-            trigger: projects,
-            start: 'top top',
-            end: () => `+=${distance()}`,
-            pin: true,
-            scrub: 0.8,
-            invalidateOnRefresh: true,
-            animation: gsap.to(track, { x: () => -distance(), ease: 'none', paused: true }),
-            onToggle: (self) => { projects.dataset.pinned = String(self.isActive) },
-          })
-          return () => railTrigger.kill()
-        })
-      }
+      window.dispatchEvent(new CustomEvent('portfolio:progress', { detail: { progress: 0 } }))
 
       const refreshAfterAssets = () => ScrollTrigger.refresh()
       if (document.fonts?.ready) document.fonts.ready.then(refreshAfterAssets)
@@ -280,7 +270,6 @@ export function useScrollTimeline(refs: ScrollTimelineRefs) {
 
       cleanupFns.push(() => {
         window.removeEventListener('load', refreshAfterAssets)
-        projectsMM.revert()
         st.kill()
         tl.kill()
         ScrollTrigger.getAll().forEach((t) => t.kill())
